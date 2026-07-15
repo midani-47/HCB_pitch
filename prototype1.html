@@ -99,9 +99,10 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 
 /* STEPS */
 .steps{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
-.steps::before{content:'';position:absolute;top:27px;left:calc(10% + 13px);right:calc(10% + 13px);height:1px;background:linear-gradient(90deg,var(--teal),var(--purple));opacity:.22;z-index:0}
+.steps::before{content:'';position:absolute;top:clamp(44px,5vw,54px);left:calc(10% + 13px);right:calc(10% + 13px);height:1px;background:linear-gradient(90deg,var(--teal),var(--purple));opacity:.22;z-index:0}
 .step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 10px;position:relative;z-index:1}
-.step-num{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,rgba(61,219,166,.18),rgba(124,99,245,.18));border:1px solid rgba(61,219,166,.32);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;flex-shrink:0}
+.step-num{width:clamp(88px,10vw,108px);height:clamp(88px,10vw,108px);border-radius:50%;background:linear-gradient(135deg,rgba(61,219,166,.18),rgba(124,99,245,.18));border:1px solid rgba(61,219,166,.32);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;flex-shrink:0;overflow:hidden}
+.step-num img{width:clamp(44px,5.6vw,60px);height:clamp(44px,5.6vw,60px);object-fit:contain;display:block}
 .step-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.2px;margin-bottom:8px}
 .step-desc{font-size:12.5px;color:var(--muted);line-height:1.6}
 
@@ -408,39 +409,53 @@ footer a:hover{color:var(--text)}
 
   <div class="steps reveal">
     <div class="step">
-      <div class="step-num">📋</div>
+      <div class="step-num">
+        <img src="assets/images/questionnaire.png" alt="">
+      </div>
       <p class="step-name"><span class="lang-de">Fragebogen ausfüllen</span><span class="lang-en" style="display:none">Fill Questionnaire</span></p>
       <p class="step-desc">
         <span class="lang-de">Teilen Sie Ihre Lebensstil- und Ernährungsgewohnheiten, damit die Ergebnisse richtig eingeordnet werden können.</span>
         <span class="lang-en" style="display:none">Share your lifestyle and nutrition habits so results can be properly contextualised.</span>
       </p>
     </div>
+
     <div class="step">
-      <div class="step-num">💉</div>
+      <div class="step-num">
+        <img src="assets/images/diabetes-hand-pointing-with-blood-drop-illustration-QfcGMmu2.jpeg" alt="">
+      </div>
       <p class="step-name"><span class="lang-de">Blutprobe entnehmen</span><span class="lang-en" style="display:none">Take Blood Sample</span></p>
       <p class="step-desc">
         <span class="lang-de">Mit der Lanzette im Kit können Sie ein paar Tropfen Blut auf einer Trockenblutkarte sammeln.</span>
         <span class="lang-en" style="display:none">A lancet in the kit lets you collect a few drops of blood onto a dried blood spot card.</span>
       </p>
     </div>
+
     <div class="step">
-      <div class="step-num">📬</div>
+      <div class="step-num">
+        <img src="assets/images/mail-icon-clipart-original.png" alt="">
+      </div>
       <p class="step-name"><span class="lang-de">Probe einsenden</span><span class="lang-en" style="display:none">Post Your Sample</span></p>
       <p class="step-desc">
         <span class="lang-de">Senden Sie die Karte in dem vorfrankierten Umschlag zurück, der jedem Kit beiliegt.</span>
         <span class="lang-en" style="display:none">Return the card in the pre-paid envelope included with every kit.</span>
       </p>
     </div>
+
     <div class="step">
-      <div class="step-num">🔬</div>
+      <div class="step-num">
+        <img src="assets/images/science-lab-computer-displaying-molecule-structure-tmxUxJvF.png" alt="">
+      </div>
       <p class="step-name"><span class="lang-de">Laboranalyse</span><span class="lang-en" style="display:none">Lab Analysis</span></p>
       <p class="step-desc">
         <span class="lang-de">Ihre Probe wird in unserem zertifizierten Labor auf genetische und epigenetische Marker analysiert.</span>
         <span class="lang-en" style="display:none">Your sample is analysed for genetic and epigenetic markers in our certified lab.</span>
       </p>
     </div>
+
     <div class="step">
-      <div class="step-num">📊</div>
+      <div class="step-num">
+        <img src="assets/images/portable-network-graphics-business-analysis-market-research-clip-art-png-favpng-rryvCud5FfgJpMbKKF28XHw0Y.png" alt="">
+      </div>
       <p class="step-name"><span class="lang-de">Ergebnisse erhalten</span><span class="lang-en" style="display:none">Receive Results</span></p>
       <p class="step-desc">
         <span class="lang-de">Sie erhalten einen personalisierten Bericht mit konkreten Empfehlungen für Ernährung, Lebensstil und Nahrungsergänzung.</span>
