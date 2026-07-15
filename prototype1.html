@@ -17,7 +17,7 @@
   --teal-glow:rgba(61,219,166,0.15);
   --purple:#7C63F5;
   --muted:#6A7D97;
-  --text:#030f2c;
+  --text:#0b2259;
   --r:18px;
   --sp:110px 60px;
 }
@@ -80,12 +80,12 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .sec-sub{font-size:17px;color:var(--muted);max-width:540px;line-height:1.65;margin-bottom:56px}
 
 /* PANELS */
-.panels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.pcard{background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);padding:32px;backdrop-filter:blur(14px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s,box-shadow .35s;text-decoration:none;color:inherit;display:block}
+.panels-grid{display:flex;flex-direction:column;gap:20px}
+.pcard{background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);padding:32px;backdrop-filter:blur(14px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s,box-shadow .35s;text-decoration:none;color:inherit;display:flex;gap:40px;align-items:center}
 .pcard:hover{transform:translateY(-7px);border-color:rgba(61,219,166,.26);box-shadow:0 26px 56px rgba(0,0,0,.5),0 0 32px rgba(61,219,166,.07)}
 .pcard-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:0;transition:opacity .35s}
 .pcard:hover .pcard-line{opacity:1}
-.pcard-img{height:80px;width:auto;max-width:100%;border-radius:8px;object-fit:contain;margin-bottom:18px}
+.pcard-img{height:120px;width:120px;max-width:100%;border-radius:12px;object-fit:cover;margin-bottom:0;flex-shrink:0}
 .pcard-brand{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;font-weight:600}
 .pcard-name{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:10px}
 .pcard-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:28px}
@@ -95,9 +95,7 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .pcard:hover .pcard-arr{background:var(--teal);transform:translateX(3px)}
 .arr-icon{width:14px;height:14px;fill:none;stroke:var(--teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .pcard:hover .arr-icon{stroke:#030D1F}
-.pcard.wide{grid-column:1/-1;display:flex;gap:40px;align-items:center}
-.pcard.wide .pcard-img{height:120px;width:auto;margin-bottom:0;flex-shrink:0;border-radius:12px}
-.pcard.wide .pcard-body{flex:1}
+.pcard-body{flex:1}
 
 /* STEPS */
 .steps{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
@@ -151,7 +149,8 @@ footer a:hover{color:var(--text)}
   nav{padding:16px 24px}
   .nav-links{display:none}
   .panels-grid{grid-template-columns:1fr}
-  .pcard.wide{flex-direction:column;gap:20px}
+  .pcard{flex-direction:column;gap:20px;text-align:center}
+  .pcard-img{width:100%;height:180px;object-fit:cover;border-radius:12px}
   .bm-grid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr 1fr;gap:24px}
   .steps::before{display:none}
@@ -240,7 +239,7 @@ footer a:hover{color:var(--text)}
 
   <div class="panels-grid">
 
-    <a class="pcard wide reveal" href="https://healthbiocare.com/geneometry-metabolic-health-panel/">
+    <a class="pcard reveal" href="https://healthbiocare.com/geneometry-metabolic-health-panel/">
       <div class="pcard-line"></div>
       <img src="assets/images/metabolic-panel.png" class="pcard-img" alt="Metabolic">
       <div class="pcard-body">
@@ -274,7 +273,7 @@ footer a:hover{color:var(--text)}
             <svg class="arr-icon" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </div>
       </div>
-    </a><br>
+    </a>
 
     <a class="pcard reveal reveal-d2" href="https://healthbiocare.com/geneometry-healthy-sport-panel/">
       <div class="pcard-line"></div>
@@ -292,7 +291,6 @@ footer a:hover{color:var(--text)}
         </div>
       </div>
     </a>
-<br>
     <a class="pcard reveal reveal-d3" href="https://healthbiocare.com/stress-monitor-panel/">
       <div class="pcard-line"></div>
       <img src="assets/images/stress-panel.png" class="pcard-img" alt="Stress">
@@ -509,13 +507,14 @@ function typeWriter(element) {
       currentHTML += char;
       if (char === '>') inTag = false;
       
+      i++;
+      
       if (!inTag) {
         element.innerHTML = currentHTML;
         setTimeout(type, 45); // typing speed
       } else {
         type(); // skip delay for tags
       }
-      i++;
     } else {
       element.innerHTML = currentHTML;
     }
@@ -557,9 +556,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const ctx = c.getContext('2d');
   let W, H, pts;
   let mx = -1000, my = -1000;
+  let isMoving = false;
+  let moveTimeout;
   
-  window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; });
-  window.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+  window.addEventListener('mousemove', (e) => { 
+    mx = e.clientX; 
+    my = e.clientY; 
+    isMoving = true;
+    clearTimeout(moveTimeout);
+    moveTimeout = setTimeout(() => { isMoving = false; }, 150);
+  });
+  window.addEventListener('mouseleave', () => { isMoving = false; mx = -1000; my = -1000; });
   
   // Orbital rings configuration (Radius, angle, speed, color, alpha)
   const orbitals = [
@@ -631,22 +638,19 @@ document.addEventListener('DOMContentLoaded', () => {
       let target_y = base_y;
 
       // Magnetic interaction
-      const mdx = mx - base_x;
-      const mdy = my - base_y;
-      const dist = Math.sqrt(mdx*mdx + mdy*mdy);
-      if (dist < 180 && mx !== -1000) {
-        // Pull dot towards mouse, up to a certain distance
-        const force = (180 - dist) / 180;
-        target_x += mdx * force * 0.8;
-        target_y += mdy * force * 0.8;
+      if (isMoving && mx !== -1000) {
+        const mdx = mx - base_x;
+        const mdy = my - base_y;
+        target_x += mdx * 0.45;
+        target_y += mdy * 0.45;
       }
 
       if (orb.currX === undefined) orb.currX = base_x;
       if (orb.currY === undefined) orb.currY = base_y;
 
       // Lerp for smooth ease in/out
-      orb.currX += (target_x - orb.currX) * 0.08;
-      orb.currY += (target_y - orb.currY) * 0.08;
+      orb.currX += (target_x - orb.currX) * 0.005;
+      orb.currY += (target_y - orb.currY) * 0.04;
 
       ctx.beginPath();
       ctx.arc(orb.currX, orb.currY, 3.5, 0, Math.PI*2);

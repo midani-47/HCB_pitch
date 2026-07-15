@@ -72,24 +72,162 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .sec-sub{font-size:17px;color:var(--muted);max-width:540px;line-height:1.65;margin-bottom:56px}
 
 /* PANELS */
-.panels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.pcard{background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);padding:32px;backdrop-filter:blur(14px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s,box-shadow .35s;text-decoration:none;color:inherit;display:block}
-.pcard:hover{transform:translateY(-7px);border-color:rgba(61,219,166,.26);box-shadow:0 26px 56px rgba(0,0,0,.5),0 0 32px rgba(61,219,166,.07)}
-.pcard-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:0;transition:opacity .35s}
-.pcard:hover .pcard-line{opacity:1}
-.pcard-img{width:60px;height:60px;border-radius:12px;object-fit:cover;margin-bottom:18px;border:1px solid var(--gb)}
-.pcard-brand{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;font-weight:600}
-.pcard-name{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:10px}
-.pcard-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:28px}
-.pcard-foot{display:flex;align-items:center;justify-content:space-between}
-.pcard-price{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--teal)}
-.pcard-arr{width:36px;height:36px;border-radius:50%;background:var(--teal-glow);border:1px solid rgba(61,219,166,.3);display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s;flex-shrink:0}
-.pcard:hover .pcard-arr{background:var(--teal);transform:translateX(3px)}
-.arr-icon{width:14px;height:14px;fill:none;stroke:var(--teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pcard:hover .arr-icon{stroke:#030D1F}
-.pcard.wide{grid-column:1/-1;display:flex;gap:40px;align-items:center}
-.pcard.wide .pcard-img{width:110px;height:110px;margin-bottom:0;flex-shrink:0;border-radius:16px}
-.pcard.wide .pcard-body{flex:1}
+.panels-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.pcard {
+  background: var(--glass);
+  border: 1px solid var(--gb);
+  border-radius: var(--r);
+  padding: 32px;
+  backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+  transition: transform .35s, border-color .35s, box-shadow .35s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.pcard:hover {
+  transform: translateY(-7px);
+  border-color: rgba(61, 219, 166, .26);
+  box-shadow: 0 26px 56px rgba(0,0,0,.5), 0 0 32px rgba(61, 219, 166, .07);
+}
+
+.pcard-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: 0;
+  transition: opacity .35s;
+}
+
+.pcard:hover .pcard-line {
+  opacity: 1;
+}
+
+/* --- UPDATED RESPONSIVE IMAGE --- */
+.pcard-img {
+  width: 100%;
+  max-width: 450px;             /* Desktop limit: image won't stretch awkwardly */
+  height: auto;                 /* Keeps original aspect ratio—no cropping/squishing */
+  border-radius: 12px;
+  object-fit: contain;          /* Displays the full panel graphic cleanly */
+  margin-bottom: 18px;
+  border: 1px solid var(--gb);
+  display: block;
+}
+
+.pcard-brand {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.pcard-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.4px;
+  margin-bottom: 10px;
+}
+
+.pcard-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.pcard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pcard-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.pcard-arr {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--teal-glow);
+  border: 1px solid rgba(61, 219, 166, .3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .2s;
+  flex-shrink: 0;
+}
+
+.pcard:hover .pcard-arr {
+  background: var(--teal);
+  transform: translateX(3px);
+}
+
+.arr-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pcard:hover .arr-icon {
+  stroke: #030D1F;
+}
+
+/* --- UPDATED WIDE CARD --- */
+.pcard.wide {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.pcard.wide .pcard-img {
+  width: 100%;
+  max-width: 320px;             /* Fits alongside the text beautifully on desktop */
+  height: auto;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  border-radius: 16px;
+}
+
+.pcard.wide .pcard-body {
+  flex: 1;
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+  .pcard.wide {
+    flex-direction: column-reverse; /* Stacks image below text on mobile for natural reading order */
+    gap: 20px;
+    align-items: flex-start;
+  }
+  
+  .pcard.wide .pcard-img {
+    max-width: 100%;            /* Allows image to dynamically fill mobile viewport width */
+    margin-top: 15px;
+  }
+}
 
 /* STEPS */
 .steps{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
