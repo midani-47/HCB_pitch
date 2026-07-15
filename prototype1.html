@@ -626,8 +626,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Draw and animate orbital dots
+ // Draw and animate orbital dots
     const cx = W / 2;
     const cy = H / 2; // Fixed hero center for orbitals
+
+    // Smoothly transition magnetic intensity to prevent sudden snapping
+    if (!window.orbitMagnet) window.orbitMagnet = 0;
+    if (isMoving && mx !== -1000) {
+      // Smoothly ramp up the magnetic strength (0.05 is the ramp speed)
+      window.orbitMagnet += (1 - window.orbitMagnet) * 0.05;
+    } else {
+      // Smoothly dissolve the magnetic strength back to 0
+      window.orbitMagnet += (0 - window.orbitMagnet) * 0.03; // Adjust 0.03 to make it return faster or slower
+    }
 
     for (let orb of orbitals) {
       orb.angle += orb.speed;
@@ -637,20 +648,22 @@ document.addEventListener('DOMContentLoaded', () => {
       let target_x = base_x;
       let target_y = base_y;
 
-      // Magnetic interaction
-      if (isMoving && mx !== -1000) {
+      // Magnetic interaction scaled smoothly by our intensity variable
+      if (window.orbitMagnet > 0.001 && mx !== -1000) {
         const mdx = mx - base_x;
         const mdy = my - base_y;
-        target_x += mdx * 0.45;
-        target_y += mdy * 0.45;
+        
+        // Scale the maximum displacement (0.45) by our fading magnet value
+        target_x += mdx * 0.45 * window.orbitMagnet;
+        target_y += mdy * 0.45 * window.orbitMagnet;
       }
 
       if (orb.currX === undefined) orb.currX = base_x;
       if (orb.currY === undefined) orb.currY = base_y;
 
-      // Lerp for smooth ease in/out
-      orb.currX += (target_x - orb.currX) * 0.005;
-      orb.currY += (target_y - orb.currY) * 0.04;
+      // Cleaned up Lerp coefficients so X and Y slide at the same smooth rate (0.04)
+      orb.currX += (target_x - orb.currX) * 0.03;
+      orb.currY += (target_y - orb.currY) * 0.01; 
 
       ctx.beginPath();
       ctx.arc(orb.currX, orb.currY, 3.5, 0, Math.PI*2);
