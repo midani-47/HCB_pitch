@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HealthBioCare | Genetic & Epigenetic Analysis</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+const fs = require('fs');
+
+const css = `*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:hsl(190, 61%, 92%);
   --glass:rgba(125, 145, 173, 0.045);
@@ -23,7 +15,7 @@
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden;line-height:1.6}
-#particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55}
+#particles{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 56px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
@@ -80,12 +72,12 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .sec-sub{font-size:17px;color:var(--muted);max-width:540px;line-height:1.65;margin-bottom:56px}
 
 /* PANELS */
-.panels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.panels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 .pcard{background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);padding:32px;backdrop-filter:blur(14px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s,box-shadow .35s;text-decoration:none;color:inherit;display:block}
 .pcard:hover{transform:translateY(-7px);border-color:rgba(61,219,166,.26);box-shadow:0 26px 56px rgba(0,0,0,.5),0 0 32px rgba(61,219,166,.07)}
 .pcard-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:0;transition:opacity .35s}
 .pcard:hover .pcard-line{opacity:1}
-.pcard-img{height:80px;width:auto;max-width:100%;border-radius:8px;object-fit:contain;margin-bottom:18px}
+.pcard-img{width:60px;height:60px;border-radius:12px;object-fit:cover;margin-bottom:18px;border:1px solid var(--gb)}
 .pcard-brand{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;font-weight:600}
 .pcard-name{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:10px}
 .pcard-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:28px}
@@ -96,7 +88,7 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .arr-icon{width:14px;height:14px;fill:none;stroke:var(--teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .pcard:hover .arr-icon{stroke:#030D1F}
 .pcard.wide{grid-column:1/-1;display:flex;gap:40px;align-items:center}
-.pcard.wide .pcard-img{height:120px;width:auto;margin-bottom:0;flex-shrink:0;border-radius:12px}
+.pcard.wide .pcard-img{width:110px;height:110px;margin-bottom:0;flex-shrink:0;border-radius:16px}
 .pcard.wide .pcard-body{flex:1}
 
 /* STEPS */
@@ -112,7 +104,7 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .bm{background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);padding:36px;backdrop-filter:blur(14px);transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
 .bm::after{content:'';position:absolute;bottom:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(124,99,245,.12),transparent 70%);pointer-events:none}
 .bm:hover{border-color:rgba(124,99,245,.28);transform:translateY(-4px)}
-.bm-img{height:70px;width:auto;max-width:100%;border-radius:8px;object-fit:contain;margin-bottom:18px}
+.bm-img{width:60px;height:60px;border-radius:12px;object-fit:cover;margin-bottom:18px;border:1px solid var(--gb)}
 .bm-title{font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.4px;margin-bottom:10px}
 .bm-desc{font-size:14px;color:var(--muted);line-height:1.7}
 
@@ -166,7 +158,19 @@ footer a:hover{color:var(--text)}
 }
 @media(prefers-reduced-motion:reduce){
   *,::before,::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
-}
+}`;
+
+const htmlContent = `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthBioCare | Genetic & Epigenetic Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+${css}
 </style>
 </head>
 <body>
@@ -175,8 +179,7 @@ footer a:hover{color:var(--text)}
 
 <!-- NAVIGATION -->
 <nav id="nav">
-  <!-- <a class="nav-logo" href="#"><span>Health</span>BioCare</a> -->
-   <img src="assets/images/logo.png" height="60px" style="object-fit: cover;"/>
+  <a class="nav-logo" href="#"><span>Health</span>BioCare</a>
   <ul class="nav-links">
     <li><a href="#panels"><span class="lang-de">Analyse-Panels</span><span class="lang-en" style="display:none">Analysis Panels</span></a></li>
     <li><a href="#process"><span class="lang-de">Ablauf</span><span class="lang-en" style="display:none">Process</span></a></li>
@@ -204,8 +207,8 @@ footer a:hover{color:var(--text)}
 
   <div class="chip"><span class="lang-de">EPIGENETIK</span><span class="lang-en" style="display:none">EPIGENETICS</span></div>
   <h1 class="hero-h1">
-    <span class="lang-de"><em>Unlock your potentials.<br>Lock your problems</em></span>
-    <span class="lang-en" style="display:none"><em>Unlock your potentials.<br>Lock your problems</em></span>
+    <span class="lang-de"><em>Entfalten Sie Ihre Potenziale<br>Schließen Sie Ihre Probleme aus</em></span>
+    <span class="lang-en" style="display:none"><em>Unlock your potentials<br>Lock your problems</em></span>
   </h1>
   <p class="hero-sub">
     <span class="lang-de">Genetische und Epigenetische Analysen zu <br> <strong>Stress</strong> | <strong> Sport </strong> | <strong>Alter</strong> | <strong>Ernährung</strong></span>
@@ -271,10 +274,10 @@ footer a:hover{color:var(--text)}
       <div class="pcard-foot">
         <span class="pcard-price">€ 460</span>
         <div class="pcard-arr">
-            <svg class="arr-icon" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          <svg class="arr-icon" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </div>
       </div>
-    </a><br>
+    </a>
 
     <a class="pcard reveal reveal-d2" href="https://healthbiocare.com/geneometry-healthy-sport-panel/">
       <div class="pcard-line"></div>
@@ -292,7 +295,7 @@ footer a:hover{color:var(--text)}
         </div>
       </div>
     </a>
-<br>
+
     <a class="pcard reveal reveal-d3" href="https://healthbiocare.com/stress-monitor-panel/">
       <div class="pcard-line"></div>
       <img src="assets/images/stress-panel.png" class="pcard-img" alt="Stress">
@@ -491,38 +494,6 @@ footer a:hover{color:var(--text)}
 </footer>
 
 <script>
-// === TYPING ANIMATION ===
-function typeWriter(element) {
-  if (!element.dataset.orig) {
-    element.dataset.orig = element.innerHTML;
-  }
-  const textHtml = element.dataset.orig;
-  element.innerHTML = '';
-  let i = 0;
-  let inTag = false;
-  let currentHTML = '';
-  
-  function type() {
-    if (i < textHtml.length) {
-      const char = textHtml.charAt(i);
-      if (char === '<') inTag = true;
-      currentHTML += char;
-      if (char === '>') inTag = false;
-      
-      if (!inTag) {
-        element.innerHTML = currentHTML;
-        setTimeout(type, 45); // typing speed
-      } else {
-        type(); // skip delay for tags
-      }
-      i++;
-    } else {
-      element.innerHTML = currentHTML;
-    }
-  }
-  type();
-}
-
 // === LANGUAGE TOGGLE ===
 function setLang(lang) {
   document.documentElement.lang = lang;
@@ -538,18 +509,11 @@ function setLang(lang) {
   if (lang === 'en') {
     deEls.forEach(el => el.style.display = 'none');
     enEls.forEach(el => el.style.display = '');
-    typeWriter(document.querySelector('.hero-h1 .lang-en em'));
   } else {
     deEls.forEach(el => el.style.display = '');
     enEls.forEach(el => el.style.display = 'none');
-    typeWriter(document.querySelector('.hero-h1 .lang-de em'));
   }
 }
-
-// Initialize typing on load
-document.addEventListener('DOMContentLoaded', () => {
-  typeWriter(document.querySelector('.hero-h1 .lang-de em'));
-});
 
 // === UPWARD-DRIFTING PARTICLE CANVAS & MAGNETIC ORBITALS ===
 (function(){
@@ -598,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if(p.x > W) p.x = 0;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(61,219,166,${p.a})`;
+      ctx.fillStyle = \`rgba(61,219,166,\${p.a})\`;
       ctx.fill();
     }
 
@@ -611,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.beginPath();
           ctx.moveTo(pts[i].x,pts[i].y);
           ctx.lineTo(pts[j].x,pts[j].y);
-          ctx.strokeStyle=`rgba(61,219,166,${(1-d/110)*0.11})`;
+          ctx.strokeStyle=\`rgba(61,219,166,\${(1-d/110)*0.11})\`;
           ctx.lineWidth=0.5;
           ctx.stroke();
         }
@@ -627,29 +591,22 @@ document.addEventListener('DOMContentLoaded', () => {
       
       let base_x = cx + orb.r * Math.cos(orb.angle);
       let base_y = cy + orb.r * Math.sin(orb.angle);
-      let target_x = base_x;
-      let target_y = base_y;
+      let draw_x = base_x;
+      let draw_y = base_y;
 
       // Magnetic interaction
       const mdx = mx - base_x;
       const mdy = my - base_y;
       const dist = Math.sqrt(mdx*mdx + mdy*mdy);
-      if (dist < 180 && mx !== -1000) {
+      if (dist < 180) {
         // Pull dot towards mouse, up to a certain distance
         const force = (180 - dist) / 180;
-        target_x += mdx * force * 0.8;
-        target_y += mdy * force * 0.8;
+        draw_x += mdx * force * 0.45;
+        draw_y += mdy * force * 0.45;
       }
 
-      if (orb.currX === undefined) orb.currX = base_x;
-      if (orb.currY === undefined) orb.currY = base_y;
-
-      // Lerp for smooth ease in/out
-      orb.currX += (target_x - orb.currX) * 0.08;
-      orb.currY += (target_y - orb.currY) * 0.08;
-
       ctx.beginPath();
-      ctx.arc(orb.currX, orb.currY, 3.5, 0, Math.PI*2);
+      ctx.arc(draw_x, draw_y, 3.5, 0, Math.PI*2);
       ctx.fillStyle = orb.color;
       ctx.globalAlpha = orb.a;
       
@@ -685,4 +642,7 @@ revEls.forEach(el => obs.observe(el));
 </script>
 
 </body>
-</html>
+</html>`;
+
+fs.writeFileSync('prototype1.html', htmlContent, 'utf-8');
+console.log('prototype1.html successfully updated.');
