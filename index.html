@@ -1233,7 +1233,7 @@
 
         const colorSets = {
             // Hero: soft pastels on light background
-            hero: ['#a5b4fc', '#93c5fd', '#99f6e4', '#c4b5fd', '#bfdbfe', '#ddd6fe', '#ccfbf1', '#a7f3d0'],
+            hero: ['#a5b4fc', '#93c5fd', '#99f6e4', '#c4b5fd', '#6e7d8f', '#696580', '#87a8a1', '#82b5af'],
             // CTA: vivid Google-palette on dark background
             cta: ['#4285F4', '#8ab4f8', '#EA4335', '#f28b82', '#FBBC05', '#fdd663', '#34A853', '#81c995']
         };
@@ -1266,23 +1266,34 @@
             }
 
             update(mx, my, active) {
-                this.rotation += this.rotSpeed;
-                if (active && mx !== null) {
-                    const dx = mx - this.x, dy = my - this.y;
-                    const d = Math.sqrt(dx * dx + dy * dy);
-                    if (d < 200 && d > 0) {
-                        const f = (200 - d) / 200 * 0.04;
-                        this.vx += (dx / d) * f;
-                        this.vy += (dy / d) * f;
-                    }
-                }
-                this.vx *= 0.97;
-                this.vy *= 0.97;
-                this.vy -= this.drift; // per-particle drift speed
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.y < -30 || this.x < -30 || this.x > this.w + 30) this.reset(false);
-            }
+    this.rotation += this.rotSpeed;
+    
+    if (active && mx !== null) {
+        const dx = mx - this.x, dy = my - this.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        
+        // --- CUSTOMIZE GRAVITY HERE ---
+        const gravityRadius = 350; // Increased from 200 (detects mouse further away)
+        const gravityStrength = 0.25; // Increased from 0.04 (how violently they pull in)
+        
+        if (d < gravityRadius && d > 0) {
+            // Stronger pull the closer the shape is to the cursor
+            const f = ((gravityRadius - d) / gravityRadius) * gravityStrength;
+            this.vx += (dx / d) * f;
+            this.vy += (dy / d) * f;
+        }
+    }
+    
+    // Friction (0.95 = high friction/snappy, 0.99 = low friction/floaty)
+    this.vx *= 0.94; 
+    this.vy *= 0.94;
+    
+    this.vy -= this.drift; // Constant upward drift
+    this.x += this.vx;
+    this.y += this.vy;
+    
+    if (this.y < -30 || this.x < -30 || this.x > this.w + 30) this.reset(false);
+}
 
             draw(ctx) {
                 ctx.save();
