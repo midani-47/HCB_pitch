@@ -125,7 +125,69 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
 .cta-box::after{content:'';position:absolute;bottom:-100px;right:-100px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(124,99,245,.1),transparent 70%);pointer-events:none}
 .cta-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,4vw,50px);font-weight:700;letter-spacing:-1.5px;margin-bottom:16px}
 .cta-sub{font-size:18px;color:var(--muted);max-width:460px;margin:0 auto 44px;line-height:1.65}
-.cta-box .btn-p{box-shadow:0 0 40px rgba(61,219,166,.4)}
+.step-dot.active{background:var(--teal);box-shadow:0 0 16px rgba(61,219,166,.4)}
+
+/* SHOWCASE SLIDER */
+.showcase-container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  height: 420px;
+  margin: 60px auto;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--glass);
+  border: 1px solid var(--gb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(14px);
+}
+.card-track {
+  display: flex;
+  gap: 30px;
+  position: absolute;
+  left: 50%;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+.showcase-card {
+  width: 200px;
+  height: 280px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 1px solid var(--gb);
+  transition: transform 0.5s, filter 0.5s;
+}
+.showcase-card:not(.active-card) {
+  transform: scale(0.85);
+  filter: brightness(0.4);
+}
+.prompt-bar {
+  position: absolute;
+  bottom: 30px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  color: #030D1F;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  max-width: 90%;
+}
+.send-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
 
 /* FOOTER */
 footer{padding:38px 60px;border-top:1px solid var(--gb);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);position:relative;z-index:1;flex-wrap:wrap;gap:16px}
@@ -156,6 +218,8 @@ footer a:hover{color:var(--text)}
   .steps::before{display:none}
   .step:nth-child(5){grid-column:1/-1}
   .hero-h1{letter-spacing:-1.5px}
+  .showcase-card { width: 150px; height: 210px; }
+  .prompt-bar { font-size: 13px; padding: 10px 20px; }
   .cta-box{padding:56px 28px}
   footer{flex-direction:column;text-align:center}
   .or3,.or4{display:none}
@@ -174,7 +238,6 @@ footer a:hover{color:var(--text)}
 
 <!-- NAVIGATION -->
 <nav id="nav">
-  <!-- <a class="nav-logo" href="#"><span>Health</span>BioCare</a> -->
    <img src="assets/images/logo.png" height="60px" style="object-fit: cover;"/>
   <ul class="nav-links">
     <li><a href="#panels"><span class="lang-de">Analyse-Panels</span><span class="lang-en" style="display:none">Analysis Panels</span></a></li>
@@ -222,6 +285,22 @@ footer a:hover{color:var(--text)}
 </section>
 
 <div class="divider"></div>
+
+<!-- SHOWCASE SLIDER -->
+<div class="showcase-container">
+  <div class="card-track" id="cardTrack">
+    <img src="assets/images/metabolic-panel.png" class="showcase-card" alt="Metabolic Panel">
+    <img src="assets/images/aging-panel.jpg" class="showcase-card" alt="Aging Panel">
+    <img src="assets/images/sport-panel.jpg" class="showcase-card" alt="Sport Panel">
+    <img src="assets/images/stress-panel.png" class="showcase-card" alt="Stress Panel">
+  </div>
+  <div class="prompt-bar">
+    <span id="typingText"></span>
+    <button class="send-btn">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M2 21l21-9L2 3v7l15 2-15 2z" fill="var(--teal)"/></svg>
+    </button>
+  </div>
+</div>
 
 <!-- ANALYSIS PANELS -->
 <div class="sec" id="panels">
@@ -543,6 +622,8 @@ function setLang(lang) {
     enEls.forEach(el => el.style.display = 'none');
     typeWriter(document.querySelector('.hero-h1 .lang-de em'));
   }
+  
+  if(window.resetSliderText) window.resetSliderText();
 }
 
 // Initialize typing on load
@@ -568,12 +649,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   window.addEventListener('mouseleave', () => { isMoving = false; mx = -1000; my = -1000; });
   
-  // Orbital rings configuration (Radius, angle, speed, color, alpha)
   const orbitals = [
-    { r: 110, angle: 0, speed: 0.005, color: '#7C63F5', a: 1 }, // purple (was teal)
-    { r: 200, angle: 40 * Math.PI/180, speed: 0.003, color: '#3DDBA6', a: 1 }, // teal (was purple)
-    { r: 300, angle: -15 * Math.PI/180, speed: 0.002, color: '#7C63F5', a: 0.5 }, // purple (darker)
-    { r: 410, angle: 70 * Math.PI/180, speed: 0.0015, color: '#3DDBA6', a: 0.65 } // teal (less dark than 3)
+    { r: 110, angle: 0, speed: 0.005, color: '#7C63F5', a: 1 },
+    { r: 200, angle: 40 * Math.PI/180, speed: 0.003, color: '#3DDBA6', a: 1 },
+    { r: 300, angle: -15 * Math.PI/180, speed: 0.002, color: '#7C63F5', a: 0.5 },
+    { r: 410, angle: 70 * Math.PI/180, speed: 0.0015, color: '#3DDBA6', a: 0.65 }
   ];
 
   function resize(){
@@ -589,15 +669,13 @@ document.addEventListener('DOMContentLoaded', () => {
       y: Math.random() * H,
       r: Math.random() * 1.4 + 0.4,
       vx: (Math.random() - 0.5) * 0.28,
-      vy: -(Math.random() * 0.45 + 0.08),   // upward
+      vy: -(Math.random() * 0.45 + 0.08),
       a: Math.random() * 0.45 + 0.15,
     }));
   }
 
   function frame(){
     ctx.clearRect(0, 0, W, H);
-
-    // Draw background particles
     for(const p of pts){
       p.x += p.vx; p.y += p.vy;
       if(p.y < -8){ p.y = H + 8; p.x = Math.random() * W; }
@@ -608,8 +686,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = `rgba(61,219,166,${p.a})`;
       ctx.fill();
     }
-
-    // Connections between particles
     for(let i=0;i<pts.length;i++){
       for(let j=i+1;j<pts.length;j++){
         const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
@@ -624,67 +700,141 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-    
-    // Draw and animate orbital dots
- // Draw and animate orbital dots
     const cx = W / 2;
-    const cy = H / 2; // Fixed hero center for orbitals
-
-    // Smoothly transition magnetic intensity to prevent sudden snapping
+    const cy = H / 2;
     if (!window.orbitMagnet) window.orbitMagnet = 0;
     if (isMoving && mx !== -1000) {
-      // Smoothly ramp up the magnetic strength (0.05 is the ramp speed)
       window.orbitMagnet += (1 - window.orbitMagnet) * 0.05;
     } else {
-      // Smoothly dissolve the magnetic strength back to 0
-      window.orbitMagnet += (0 - window.orbitMagnet) * 0.03; // Adjust 0.03 to make it return faster or slower
+      window.orbitMagnet += (0 - window.orbitMagnet) * 0.03;
     }
-
     for (let orb of orbitals) {
       orb.angle += orb.speed;
-      
       let base_x = cx + orb.r * Math.cos(orb.angle);
       let base_y = cy + orb.r * Math.sin(orb.angle);
       let target_x = base_x;
       let target_y = base_y;
-
-      // Magnetic interaction scaled smoothly by our intensity variable
       if (window.orbitMagnet > 0.001 && mx !== -1000) {
         const mdx = mx - base_x;
         const mdy = my - base_y;
-        
-        // Scale the maximum displacement (0.45) by our fading magnet value
         target_x += mdx * 0.45 * window.orbitMagnet;
         target_y += mdy * 0.45 * window.orbitMagnet;
       }
-
       if (orb.currX === undefined) orb.currX = base_x;
       if (orb.currY === undefined) orb.currY = base_y;
-
-      // Cleaned up Lerp coefficients so X and Y slide at the same smooth rate (0.04)
       orb.currX += (target_x - orb.currX) * 0.03;
       orb.currY += (target_y - orb.currY) * 0.01; 
-
       ctx.beginPath();
       ctx.arc(orb.currX, orb.currY, 3.5, 0, Math.PI*2);
       ctx.fillStyle = orb.color;
       ctx.globalAlpha = orb.a;
-      
       ctx.shadowBlur = 9;
       ctx.shadowColor = orb.color;
-      
       ctx.fill();
-      
       ctx.shadowBlur = 0;
       ctx.globalAlpha = 1;
     }
-
     requestAnimationFrame(frame);
   }
-
-  window.addEventListener('resize', resize);
   resize();
+  window.addEventListener('resize', resize);
   frame();
+})();
+
+// === SHOWCASE SLIDER LOGIC ===
+(function(){
+  const promptsEn = [
+    "I need to understand why I'm always tired and can't lose weight...",
+    "How can I slow down my biological clock?...",
+    "I want to optimize my workouts for a marathon...",
+    "Is my high-stress job affecting me on a molecular level?..."
+  ];
+  const promptsDe = [
+    "Ich möchte verstehen, warum ich müde bin und nicht abnehme...",
+    "Wie kann ich meine biologische Uhr verlangsamen?...",
+    "Ich möchte mein Training für einen Marathon optimieren...",
+    "Wirkt sich mein Job auf molekularer Ebene auf mich aus?..."
+  ];
+
+  const slideOffsets = [345, 115, -115, -345]; 
+  let currentSlide = 0;
+  const track = document.getElementById('cardTrack');
+  const textElement = document.getElementById('typingText');
+  let typeTimeout;
+  
+  if (!track || !textElement) return;
+
+  function typeSlideText(targetText, callback) {
+    let i = 0;
+    textElement.textContent = "";
+    function step() {
+      if (i < targetText.length) {
+        textElement.textContent += targetText.charAt(i);
+        i++;
+        typeTimeout = setTimeout(step, 40);
+      } else if (callback) {
+        typeTimeout = setTimeout(callback, 2500);
+      }
+    }
+    step();
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slideOffsets.length;
+    
+    // 1. Slide the cards
+    const isMobile = window.innerWidth <= 900;
+    const mOffsets = [270, 90, -90, -270];
+    const offset = isMobile ? mOffsets[currentSlide] : slideOffsets[currentSlide];
+    
+    track.style.transform = `translateX(calc(-50% + ${offset}px))`;
+    
+    const cards = track.querySelectorAll('.showcase-card');
+    cards.forEach((c, idx) => c.classList.toggle('active-card', idx === currentSlide));
+
+    // 2. Type out the corresponding text
+    const lang = document.documentElement.lang || 'en';
+    const text = lang === 'de' ? promptsDe[currentSlide] : promptsEn[currentSlide];
+    
+    clearTimeout(typeTimeout);
+    typeSlideText(text, () => {
+      typeTimeout = setTimeout(nextSlide, 500);
+    });
+  }
+
+  // Initial setup
+  track.style.transform = `translateX(calc(-50% + ${window.innerWidth <= 900 ? 270 : 345}px))`;
+  track.querySelectorAll('.showcase-card')[0].classList.add('active-card');
+  
+  // Create an IntersectionObserver to start the slider only when it scrolls into view
+  const showcaseContainer = document.querySelector('.showcase-container');
+  let hasStarted = false;
+  
+  const obs = new IntersectionObserver((entries) => {
+    if(entries[0].isIntersecting && !hasStarted) {
+      hasStarted = true;
+      setTimeout(() => {
+        const lang = document.documentElement.lang || 'en';
+        const text = lang === 'de' ? promptsDe[0] : promptsEn[0];
+        typeSlideText(text, () => {
+          typeTimeout = setTimeout(nextSlide, 500);
+        });
+      }, 500);
+    }
+  }, {threshold: 0.3});
+  
+  if (showcaseContainer) obs.observe(showcaseContainer);
+
+  // Expose reset for language toggle
+  window.resetSliderText = function() {
+    if (!hasStarted) return;
+    clearTimeout(typeTimeout);
+    const lang = document.documentElement.lang || 'en';
+    const text = lang === 'de' ? promptsDe[currentSlide] : promptsEn[currentSlide];
+    typeSlideText(text, () => {
+      typeTimeout = setTimeout(nextSlide, 500);
+    });
+  };
 })();
 
 // === NAV SOLIDIFY ON SCROLL ===
