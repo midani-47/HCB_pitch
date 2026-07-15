@@ -146,18 +146,25 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
   background: var(--glass);
   border: 1px solid var(--gb);
   display: flex;
-  align-items: center;
+  align-items: center;      /* Vertically centers everything inside */
   justify-content: center;
   backdrop-filter: blur(14px);
 }
+
 .card-track {
   display: flex;
   gap: 30px;
   position: absolute;
   left: 50%;
+  
+  /* --- FIX: Center vertically without relying on transform --- */
+  top: 50px;                 /* Keeps a clean, symmetrical margin from the top border */
+  height: 280px;             /* Match this exactly to your showcase-card height */
+  
   transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: transform;
 }
+
 .showcase-card {
   width: 200px;
   height: 280px;
@@ -167,14 +174,19 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
   border: 1px solid var(--gb);
   transition: transform 0.5s, filter 0.5s;
 }
+
 .showcase-card:not(.active-card) {
   transform: scale(0.85);
   filter: brightness(0.4);
 }
+
+/* --- CENTER THE PROMPT BAR PERFECTLY --- */
 .prompt-bar {
   position: absolute;
-  bottom: 30px;
   z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Keeps absolute center coordinates on both X and Y axes */
   background: rgba(255, 255, 255, 0.95);
   color: #030D1F;
   padding: 14px 28px;
@@ -186,8 +198,10 @@ nav.solid{background:rgba(255,255,255,0.3);backdrop-filter:blur(24px) saturate(1
   align-items: center;
   gap: 16px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  max-width: 90%;
+  width: 90%; /* Keeps it highly responsive on smaller viewports */
+  max-width: 580px; /* Restricts it from stretching too wide on desktop screens */
 }
+
 .send-btn {
   background: none;
   border: none;
