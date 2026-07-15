@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geneometry® — Platform Vision</title>
+    <meta name="description" content="A vision for the modernised HealthBioCare Geneometry® platform.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & TOKENS ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #f0f2f8;
+            --bg-white: #ffffff;
+            --bg-card: rgba(255,255,255,0.75);
+            --bg-card-solid: #f6f7fb;
+            --bg-surface: #fafbfd;
+            --bg-dark: #0a0a0a;
+
+            --text-primary: #0a0a0a;
+            --text-secondary: #555e6e;
+            --text-muted: #8892a4;
+            --text-white: #f0f2f8;
+
+            --accent: #4f6ef7;
+            --teal: #2dd4bf;
+            --teal-bg: rgba(45,212,191,0.08);
+            --emerald: #34d399;
+            --emerald-bg: rgba(52,211,153,0.08);
+            --violet: #a78bfa;
+            --violet-bg: rgba(167,139,250,0.08);
+            --amber: #f59e0b;
+            --amber-bg: rgba(245,158,11,0.08);
+            --rose: #f43f5e;
+            --rose-bg: rgba(244,63,94,0.08);
+
+            --border: rgba(0,0,0,0.06);
+            --border-hover: rgba(0,0,0,0.12);
+
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-display: 'Space Grotesk', var(--font);
+            --font-mono: 'SF Mono', 'Fira Code', monospace;
+
+            --radius: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 100px;
+        }
+
+        html { font-size: 15px; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== PROTOTYPE BANNER ===== */
+        .proto-banner {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 9999;
+            background: var(--text-primary);
+            padding: 8px 16px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--text-white);
+        }
+        .proto-banner a {
+            color: var(--teal);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        /* ===== APP SHELL ===== */
+        .app-shell {
+            display: grid;
+            grid-template-columns: 256px 1fr;
+            min-height: 100vh;
+            padding-top: 36px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background: var(--bg-white);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 36px;
+            height: calc(100vh - 36px);
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: var(--text-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1rem;
+            color: white;
+        }
+        .brand-text {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        .brand-text span {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: block;
+            margin-top: -2px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+        }
+        .nav-group-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            padding: 12px 12px 6px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-size: 0.87rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+        .nav-item:hover {
+            background: rgba(0,0,0,0.04);
+            color: var(--text-primary);
+        }
+        .nav-item.active {
+            background: var(--text-primary);
+            color: var(--text-white);
+        }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.6; }
+        .nav-item.active svg { opacity: 1; color: var(--text-white); }
+        .nav-item .badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 1px 7px;
+            border-radius: var(--radius-pill);
+            background: rgba(0,0,0,0.06);
+            color: var(--text-secondary);
+        }
+        .nav-item.active .badge {
+            background: rgba(255,255,255,0.2);
+            color: var(--text-white);
+        }
+        .nav-item .badge-amber {
+            background: var(--amber-bg);
+            color: var(--amber);
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+        }
+        .user-avatar {
+            width: 32px; height: 32px;
+            border-radius: var(--radius-pill);
+            background: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.72rem;
+            color: white;
+        }
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .user-role {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 32px 40px;
+            overflow-y: auto;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.035em;
+        }
+        .top-actions { display: flex; gap: 10px; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font);
+        }
+        .btn svg { width: 16px; height: 16px; }
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--text-white);
+        }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+        }
+        .btn-ghost:hover {
+            background: rgba(0,0,0,0.03);
+            border-color: var(--border-hover);
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            transition: border-color 0.2s, transform 0.25s, box-shadow 0.3s;
+        }
+        .stat-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        }
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .stat-icon {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-icon svg { width: 16px; height: 16px; }
+        .stat-icon-teal { background: var(--teal-bg); color: var(--teal); }
+        .stat-icon-emerald { background: var(--emerald-bg); color: var(--emerald); }
+        .stat-icon-violet { background: var(--violet-bg); color: var(--violet); }
+        .stat-icon-accent { background: rgba(79,110,247,0.08); color: var(--accent); }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 4px;
+        }
+        .stat-change {
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+        .stat-change-up { color: var(--emerald); }
+        .stat-change-neutral { color: var(--text-muted); }
+
+        /* ===== PANELS ===== */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .panel {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.01em;
+        }
+        .panel-title .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .panel-action {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .panel-action:hover { text-decoration: underline; }
+
+        /* ===== DATA TABLE ===== */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th {
+            text-align: left;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card-solid);
+        }
+        .data-table td {
+            padding: 13px 18px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: rgba(0,0,0,0.015); }
+
+        .patient-name { font-weight: 600; color: var(--text-primary); }
+        .patient-id { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .status-badge::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+        }
+        .status-complete { background: var(--emerald-bg); color: #059669; }
+        .status-complete::before { background: var(--emerald); }
+        .status-pending { background: var(--amber-bg); color: #b45309; }
+        .status-pending::before { background: var(--amber); }
+        .status-processing { background: rgba(79,110,247,0.08); color: var(--accent); }
+        .status-processing::before { background: var(--accent); }
+        .status-new { background: var(--violet-bg); color: #7c3aed; }
+        .status-new::before { background: var(--violet); }
+
+        .panel-name {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 3px 8px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.04);
+            color: var(--text-secondary);
+        }
+
+        /* ===== ACTIVITY FEED ===== */
+        .activity-list { list-style: none; }
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 22px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item:hover { background: rgba(0,0,0,0.015); }
+
+        .activity-icon {
+            width: 32px; height: 32px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .activity-icon svg { width: 14px; height: 14px; }
+        .activity-icon-teal { background: var(--teal-bg); color: var(--teal); }
+        .activity-icon-emerald { background: var(--emerald-bg); color: var(--emerald); }
+        .activity-icon-violet { background: var(--violet-bg); color: var(--violet); }
+        .activity-icon-amber { background: var(--amber-bg); color: var(--amber); }
+
+        .activity-text p {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .activity-text strong { color: var(--text-primary); font-weight: 600; }
+        .activity-time {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* ===== CHART (CSS-ONLY) ===== */
+        .chart-placeholder { padding: 24px; }
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 160px;
+        }
+        .chart-bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-bar {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            min-width: 20px;
+        }
+        .chart-bar-teal { background: linear-gradient(180deg, var(--teal), rgba(45,212,191,0.3)); }
+        .chart-bar-accent { background: linear-gradient(180deg, var(--accent), rgba(79,110,247,0.3)); }
+        .chart-bar-violet { background: linear-gradient(180deg, var(--violet), rgba(167,139,250,0.3)); }
+        .chart-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            padding: 14px 0 0;
+            justify-content: center;
+        }
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .chart-legend-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+        }
+
+        /* ===== QUESTIONNAIRE ===== */
+        .questionnaire-preview { padding: 22px; }
+        .question-card {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            margin-bottom: 12px;
+        }
+        .question-number {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        .question-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 14px;
+        }
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-white);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .option-item:hover {
+            border-color: var(--border-hover);
+            background: rgba(0,0,0,0.015);
+        }
+        .option-item.selected {
+            border-color: var(--text-primary);
+            background: rgba(0,0,0,0.03);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .option-radio {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--border-hover);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .option-item.selected .option-radio {
+            border-color: var(--text-primary);
+        }
+        .option-item.selected .option-radio::after {
+            content: '';
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--text-primary);
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .progress-bar-container { margin-bottom: 18px; }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+        .progress-track {
+            height: 4px;
+            background: rgba(0,0,0,0.06);
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--accent));
+            border-radius: var(--radius-pill);
+        }
+
+        /* ===== BOTTOM GRID ===== */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card:nth-child(1) { animation: fadeIn 0.5s 0.1s ease-out forwards; opacity: 0; }
+        .stat-card:nth-child(2) { animation: fadeIn 0.5s 0.2s ease-out forwards; opacity: 0; }
+        .stat-card:nth-child(3) { animation: fadeIn 0.5s 0.3s ease-out forwards; opacity: 0; }
+        .stat-card:nth-child(4) { animation: fadeIn 0.5s 0.4s ease-out forwards; opacity: 0; }
+        .panel { animation: fadeIn 0.5s 0.5s ease-out forwards; opacity: 0; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 900px) {
+            .app-shell { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .bottom-grid { grid-template-columns: 1fr; }
+            .main-content { padding: 24px 16px; }
+        }
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .top-bar { flex-direction: column; gap: 16px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Banner -->
+    <div class="proto-banner">
+        ✦ Design Prototype — Geneometry® Platform Vision by Abed Midani · <a href="index.html">← Back to pitch</a>
+    </div>
+
+    <div class="app-shell">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <div class="brand-icon">G</div>
+                    <div class="brand-text">
+                        Geneometry<span>by HealthBioCare</span>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group-label">Overview</div>
+                <a class="nav-item active" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    Patients
+                    <span class="badge">247</span>
+                </a>
+                <div class="nav-group-label">Analysis</div>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                    Questionnaires
+                    <span class="badge badge-amber">3</span>
+                </a>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                    Biomarker Results
+                </a>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    miRNA Panels
+                </a>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    Biological Age
+                </a>
+                <div class="nav-group-label">Reports</div>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                    Patient Reports
+                </a>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                    Export Data
+                </a>
+                <div class="nav-group-label">Settings</div>
+                <a class="nav-item" href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                    Configuration
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="user-avatar">BH</div>
+                    <div>
+                        <div class="user-name">Dr. Berit Hippe</div>
+                        <div class="user-role">CEO · Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="top-actions">
+                    <button class="btn btn-ghost">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                        Export
+                    </button>
+                    <button class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                        New Analysis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Active Patients</span>
+                        <div class="stat-icon stat-icon-teal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">247</div>
+                    <span class="stat-change stat-change-up">↑ 12% this month</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Analyses This Month</span>
+                        <div class="stat-icon stat-icon-emerald">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">38</div>
+                    <span class="stat-change stat-change-up">↑ 8% vs last month</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Pending Reports</span>
+                        <div class="stat-icon stat-icon-violet">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">7</div>
+                    <span class="stat-change stat-change-neutral">3 awaiting review</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Avg. Biological Age Δ</span>
+                        <div class="stat-icon stat-icon-accent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">−3.2y</div>
+                    <span class="stat-change stat-change-up">↑ Improvement trend</span>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="dot"></span> Recent Analyses</div>
+                        <a class="panel-action" href="#">View all →</a>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Patient</th><th>Panel</th><th>Status</th><th>Date</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="patient-name">Maria Schneider</div><div class="patient-id">HBC-2026-0241</div></td>
+                                <td><span class="panel-name">Healthy Aging</span></td>
+                                <td><span class="status-badge status-complete">Complete</span></td>
+                                <td>14 Jul 2026</td>
+                            </tr>
+                            <tr>
+                                <td><div class="patient-name">Thomas Weber</div><div class="patient-id">HBC-2026-0240</div></td>
+                                <td><span class="panel-name">Metabolic Health</span></td>
+                                <td><span class="status-badge status-processing">Processing</span></td>
+                                <td>13 Jul 2026</td>
+                            </tr>
+                            <tr>
+                                <td><div class="patient-name">Anna Berger</div><div class="patient-id">HBC-2026-0239</div></td>
+                                <td><span class="panel-name">Stress Monitor</span></td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>12 Jul 2026</td>
+                            </tr>
+                            <tr>
+                                <td><div class="patient-name">Lukas Hoffmann</div><div class="patient-id">HBC-2026-0238</div></td>
+                                <td><span class="panel-name">Healthy Sport</span></td>
+                                <td><span class="status-badge status-complete">Complete</span></td>
+                                <td>11 Jul 2026</td>
+                            </tr>
+                            <tr>
+                                <td><div class="patient-name">Eva Müller</div><div class="patient-id">HBC-2026-0237</div></td>
+                                <td><span class="panel-name">Healthy Aging</span></td>
+                                <td><span class="status-badge status-new">New</span></td>
+                                <td>10 Jul 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="dot"></span> Activity</div>
+                        <a class="panel-action" href="#">Clear all</a>
+                    </div>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon activity-icon-emerald">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                            </div>
+                            <div class="activity-text">
+                                <p><strong>Maria Schneider</strong>'s Healthy Aging report is ready</p>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon activity-icon-violet">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            </div>
+                            <div class="activity-text">
+                                <p><strong>miRNA panel</strong> batch #47 completed on NextSeq 2000</p>
+                                <div class="activity-time">4 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon activity-icon-teal">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                            </div>
+                            <div class="activity-text">
+                                <p><strong>Thomas Weber</strong> submitted Online Questionnaire</p>
+                                <div class="activity-time">Yesterday</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon activity-icon-amber">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                            </div>
+                            <div class="activity-text">
+                                <p><strong>3 new patients</strong> registered this week</p>
+                                <div class="activity-time">2 days ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon activity-icon-emerald">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                            </div>
+                            <div class="activity-text">
+                                <p>Monthly <strong>biomarker summary</strong> generated</p>
+                                <div class="activity-time">3 days ago</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="bottom-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="dot"></span> Biomarker Distribution</div>
+                        <a class="panel-action" href="#">Last 30 days</a>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div class="chart-bars">
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-teal" style="height:65%"></div><div class="chart-label">SNPs</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-accent" style="height:82%"></div><div class="chart-label">miRNA</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-violet" style="height:45%"></div><div class="chart-label">Methyl.</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-teal" style="height:72%"></div><div class="chart-label">Telom.</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-accent" style="height:38%"></div><div class="chart-label">Inflam.</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-violet" style="height:90%"></div><div class="chart-label">DNA stab.</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-teal" style="height:55%"></div><div class="chart-label">Sirtuins</div></div>
+                            <div class="chart-bar-group"><div class="chart-bar chart-bar-accent" style="height:60%"></div><div class="chart-label">mtDNA</div></div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--teal)"></div> Genetic</div>
+                            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--accent)"></div> Epigenetic</div>
+                            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--violet)"></div> Functional</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="dot"></span> Questionnaire Preview</div>
+                        <a class="panel-action" href="#">Edit form →</a>
+                    </div>
+                    <div class="questionnaire-preview">
+                        <div class="progress-bar-container">
+                            <div class="progress-info">
+                                <span>Section 2 of 5 — Lifestyle</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width:40%"></div>
+                            </div>
+                        </div>
+                        <div class="question-card">
+                            <div class="question-number">Question 7</div>
+                            <div class="question-text">How often do you engage in moderate to vigorous physical activity per week?</div>
+                            <div class="question-options">
+                                <div class="option-item"><div class="option-radio"></div>Rarely or never</div>
+                                <div class="option-item"><div class="option-radio"></div>1–2 times per week</div>
+                                <div class="option-item selected"><div class="option-radio"></div>3–4 times per week</div>
+                                <div class="option-item"><div class="option-radio"></div>5+ times per week</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
